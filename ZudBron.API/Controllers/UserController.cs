@@ -5,7 +5,7 @@ namespace ZudBron.API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class UserController : ControllerBase
     {
 
     }
