@@ -11,4 +11,8 @@
     <Folder Include="IService\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ZudBron.Domain\ZudBron.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -17,4 +17,9 @@
     <Folder Include="Middleware\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ZudBron.Application\ZudBron.Application.csproj" />
+    <ProjectReference Include="..\ZudBron.Infrastructure\ZudBron.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
