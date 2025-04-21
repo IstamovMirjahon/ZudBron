@@ -1,6 +1,8 @@
-﻿namespace ZudBron.Domain.Models.Media
+﻿using ZudBron.Domain.Abstractions;
+
+namespace ZudBron.Domain.Models.Media
 {
-    public class MediaFile
+    public class MediaFile : BaseEntity
     {
         public string FileName { get; set; } = string.Empty;
         public string FilePath { get; set; } = string.Empty;

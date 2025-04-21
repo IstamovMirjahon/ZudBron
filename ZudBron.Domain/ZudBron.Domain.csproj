@@ -8,7 +8,11 @@
 
   <ItemGroup>
     <Folder Include="CustomAttributes\" />
+<<<<<<< HEAD
     <Folder Include="Enums\" />
+=======
+    <Folder Include="DTOs\" />
+>>>>>>> 5845e8efa749e3fc39ace436a921ac8c29452d00
     <Folder Include="StaticModels\" />
   </ItemGroup>
 
