@@ -2,7 +2,7 @@
 
 namespace ZudBron.Domain.DTOs.UserDTOs
 {
-    class UserRegisterDto
+    public class UserRegisterByPhoneDto
     {
         [Required(ErrorMessage = "Ism familya kiritilishi shart")]
         [MaxLength(100, ErrorMessage = "Ism familya 100 ta belgidan oshmasligi kerak")]
@@ -15,5 +15,8 @@ namespace ZudBron.Domain.DTOs.UserDTOs
         [Required(ErrorMessage = "Parol kiritilishi shart")]
         [MinLength(6, ErrorMessage = "Parol kamida 6 ta belgidan iborat bo‘lishi kerak")]
         public string Password { get; set; } = null!;
+
+        [Compare(nameof(Password), ErrorMessage = "Parollar mos emas")]
+        public string ConfirmPassword { get; set; } = null!;
     }
 }
