@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ZudBron.Domain.Abstractions;
+using ZudBron.Domain.Models.BookingModels;
 using ZudBron.Domain.Models.Media;
+using ZudBron.Domain.Models.NotificationModels;
+using ZudBron.Domain.Models.PaymentModels;
 using ZudBron.Domain.Models.Reviews;
 using ZudBron.Domain.Models.SportFieldModels;
 
@@ -34,5 +37,9 @@ namespace ZudBron.Infrastructure
         public DbSet<SportField> SportFields {  get; set; }
         public DbSet<MediaFile> MediaFiles {  get; set; }
         public DbSet<Review> Reviews {  get; set; }
+        public DbSet<Booking> Bookings { get; set; }
+        public DbSet<Payment> Payments { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+
     }
 }
