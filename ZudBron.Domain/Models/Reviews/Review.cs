@@ -22,6 +22,9 @@ namespace ZudBron.Domain.Models.Reviews
         [MaxLength(1000)]
         public string Content { get; set; } = string.Empty;
 
+        [Required]
+        public DateTime Created { get; set; }
+
         [Range(1, 5)]
         public int Rating { get; set; }
 
