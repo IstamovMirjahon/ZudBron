@@ -1,0 +1,38 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using ZudBron.Application.IService.ILocationServices;
+using ZudBron.Domain.DTOs.LocationDTO;
+
+namespace ZudBron.API.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class LocationController : ControllerBase
+    {
+        private readonly ILocationService _locationService;
+
+        public LocationController(ILocationService locationService)
+        {
+            _locationService = locationService;
+        }
+
+        /// <summary>
+        /// Foydalanuvchi joylashuvi va sport maydon manzili asosida marshrut URL'ini qaytaradi.
+        /// </summary>
+        [HttpPost("route")]
+        public async Task<IActionResult> GetRoute([FromBody] RouteRequestDto request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var result = await _locationService.GetGoogleMapsRouteAsync(request);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+    }
+}
