@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using ZudBron.Domain.Abstractions;
 using ZudBron.Domain.Models.Media;
+using ZudBron.Domain.Models.SportFieldModels;
 using ZudBron.Domain.Models.UserModel;
 
 namespace ZudBron.Domain.Models.Reviews
@@ -13,7 +14,7 @@ namespace ZudBron.Domain.Models.Reviews
 
         [Required]
         public Guid SportFieldId { get; set; }
-        //public SportField SportField { get; set; } = default!;
+        public SportField SportField { get; set; } = default!;
 
         [MaxLength(100)]
         public string Title { get; set; } = string.Empty;
