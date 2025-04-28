@@ -1,5 +1,4 @@
 ﻿using Article.Domain.Abstractions;
-using System.Security.Cryptography;
 using ZudBron.Application.IService.IAuthServices;
 using ZudBron.Application.IService.IEmailServices;
 using ZudBron.Application.IService.ITokenServices;
@@ -8,7 +7,6 @@ using ZudBron.Domain.DTOs.TokenDTOs;
 using ZudBron.Domain.DTOs.UserDTOs;
 using ZudBron.Domain.Models.UserModel;
 using ZudBron.Infrastructure.Repositories.AuthRepositories;
-using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace ZudBron.Infrastructure.Services.AuthServices
 {
