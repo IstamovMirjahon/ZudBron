@@ -1,4 +1,4 @@
-﻿namespace ZudBron.Domain.DTOs.UserDTOs
+﻿namespace ZudBron.Domain.Enums.NotificationEnum
 {
     public enum NotificationType
     {

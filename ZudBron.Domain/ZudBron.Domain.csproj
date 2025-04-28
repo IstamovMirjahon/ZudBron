@@ -9,7 +9,6 @@
   <ItemGroup>
     <Folder Include="CustomAttributes\" />
     <Folder Include="DTOs\PaymentDTOs\" />
-    <Folder Include="StaticModels\" />
   </ItemGroup>
 
 </Project>

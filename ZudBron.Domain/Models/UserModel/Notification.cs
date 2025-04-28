@@ -1,5 +1,5 @@
 ﻿using ZudBron.Domain.Abstractions;
-using ZudBron.Domain.DTOs.UserDTOs;
+using ZudBron.Domain.Enums.NotificationEnum;
 using ZudBron.Domain.Models.UserModel;
 
 namespace ZudBron.Domain.Models.NotificationModels

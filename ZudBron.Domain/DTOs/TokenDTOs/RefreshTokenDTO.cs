@@ -2,9 +2,9 @@
 
 namespace ZudBron.Domain.DTOs.TokenDTOs
 {
-    public class RefreshTokenDTO
+    public class RefreshTokenDto
     {
         [Required]
-        public string RefreshToken { get; set; }
+        public string RefreshToken { get; set; } = null!;
     }
 }

@@ -6,7 +6,7 @@ namespace ZudBron.Domain.DTOs.UserDTOs
     {
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public string Email { get; set; } = null!;
         [Required]
         public int Code { get; set; }
     }
