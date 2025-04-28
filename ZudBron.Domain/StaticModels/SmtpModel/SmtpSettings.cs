@@ -1,4 +1,4 @@
-﻿namespace ZudBron.Domain.StaticModels
+﻿namespace ZudBron.Domain.StaticModels.SmtpModel
 {
     public class SmtpSettings
     {

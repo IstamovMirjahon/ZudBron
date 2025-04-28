@@ -1,85 +1,104 @@
-﻿using ZudBron.Domain.StaticModels;
+﻿using ZudBron.Domain.StaticModels.SmtpModel;
+using Microsoft.OpenApi.Models;
 
-namespace ZudBron.API
+namespace ZudBron.API;
+
+public class Program
 {
-    public class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
+        var builder = WebApplication.CreateBuilder(args);
+
+        // Configure Services
+        ConfigureServices(builder.Services, builder.Configuration);
+
+        var app = builder.Build();
+
+        // Configure Middleware
+        ConfigureMiddleware(app);
+
+        app.Run();
+    }
+
+    private static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    {
+        // SMTP settings
+        services.Configure<SmtpSettings>(configuration.GetSection("SmtpSettings"));
+
+        // JWT settings (validate)
+        var jwtSettings = configuration.GetSection("JwtSettings");
+        var secretKey = jwtSettings["Secret"] ?? throw new InvalidOperationException("JWT Secret is missing in configuration.");
+
+        // Add Controllers
+        services.AddControllers();
+
+        // Swagger settings
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen(options =>
         {
-            var builder = WebApplication.CreateBuilder(args);
-
-            builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
-
-            // JWT sozlamalarini yuklash
-            var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-            var secretKey = jwtSettings["Secret"] ?? throw new ArgumentNullException("JWT Secret not found!");
-
-            // Add services to the container.
-            builder.Services.AddControllers();
-
-            // Swagger uchun kerakli xizmatlar
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen(options =>
+            options.EnableAnnotations();
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                options.EnableAnnotations();
-                options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "Enter JWT Bearer token"
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
                 {
-                    Name = "Authorization",
-                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
-                    Scheme = "Bearer",
-                    BearerFormat = "JWT",
-                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-                    Description = "Bearer tokenni kiriting"
-                });
-                options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
-                {
+                    new OpenApiSecurityScheme
                     {
-                        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                        Reference = new OpenApiReference
                         {
-                            Reference = new Microsoft.OpenApi.Models.OpenApiReference
-                            {
-                                Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        new string[] { }
-                    }
-                });
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
             });
+        });
 
-            // CORS sozlamalari - Hamma kelayotgan so'rovlarni ruxsat berish
-            builder.Services.AddCors(options =>
+        // CORS policy
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll", policy =>
             {
-                options.AddPolicy("AllowAll", policy =>
-                {
-                    policy.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader();
-                });
+                policy.AllowAnyOrigin()
+                      .AllowAnyMethod()
+                      .AllowAnyHeader();
             });
+        });
 
+        // Authentication, Authorization services
+        services.AddAuthentication();
+        services.AddAuthorization();
+    }
 
-            var app = builder.Build();
+    private static void ConfigureMiddleware(WebApplication app)
+    {
+        // Use HTTPS Redirection
+        app.UseHttpsRedirection();
 
-            // CORS-ni qo'shish
-            app.UseCors("AllowAll");
-
-            // Swagger middleware
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
-            app.UseHttpsRedirection();
-
-            // JWT autentifikatsiyasini qo‘shish
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.MapControllers();
-
-            app.Run();
+        // Enable Swagger (only in Development)
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
         }
+
+        // Enable CORS
+        app.UseCors("AllowAll");
+
+        // Authentication and Authorization
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        // Map Controllers
+        app.MapControllers();
     }
 }

@@ -2,7 +2,7 @@
 
 namespace ZudBron.Infrastructure.Services.UserServices
 {
-    public class UserService : IUserService
+    public class AuthService : IAuthService
     { 
     }
 }
