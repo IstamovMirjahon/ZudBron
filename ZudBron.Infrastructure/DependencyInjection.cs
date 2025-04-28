@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ZudBron.Application.IService.IUserServices;
+using ZudBron.Application.IService.IAuthServices;
 using ZudBron.Domain.Abstractions;
-using ZudBron.Infrastructure.Repositories.UserRepositories;
-using ZudBron.Infrastructure.Services.UserServices;
+using ZudBron.Infrastructure.Repositories.AuthRepositories;
+using ZudBron.Infrastructure.Services.AuthServices;
 
 namespace ZudBron.Infrastructure
 {

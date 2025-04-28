@@ -1,6 +1,7 @@
 ﻿namespace ZudBron.Infrastructure.Repositories.UserRepositories
 {
-    public interface IAuthRepository
+    public class UserRepository : IUserRepository
     {
+
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace ZudBron.Infrastructure.Repositories.UserRepositories
+﻿namespace ZudBron.Infrastructure.Repositories.AuthRepositories
 {
     public class AuthRepository : IAuthRepository
     {

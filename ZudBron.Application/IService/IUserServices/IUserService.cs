@@ -1,6 +1,6 @@
 ﻿namespace ZudBron.Application.IService.IUserServices
 {
-    public interface IAuthService
+    public interface IUserService
     {
     }
 }
