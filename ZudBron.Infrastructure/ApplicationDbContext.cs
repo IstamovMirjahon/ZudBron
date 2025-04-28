@@ -6,6 +6,7 @@ using ZudBron.Domain.Models.NotificationModels;
 using ZudBron.Domain.Models.PaymentModels;
 using ZudBron.Domain.Models.Reviews;
 using ZudBron.Domain.Models.SportFieldModels;
+using ZudBron.Domain.Models.UserModel;
 
 namespace ZudBron.Infrastructure;
 
@@ -38,4 +39,8 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<Payment> Payments { get; set; }
     public DbSet<Notification> Notifications { get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<TempUser> TempUsers { get; set; }
+    public DbSet<ForgotPassword> ForgotPasswords { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
 }

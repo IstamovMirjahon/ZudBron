@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using ZudBron.Domain.Abstractions;
 using ZudBron.Domain.Enums.UserEnum;
+using ZudBron.Domain.Models.BookingModels;
+using ZudBron.Domain.Models.Reviews;
 
 namespace ZudBron.Domain.Models.UserModel
 {
@@ -26,7 +28,7 @@ namespace ZudBron.Domain.Models.UserModel
 
         public UserRole Role { get; set; } = UserRole.User;
 
-        //public List<Booking> Bookings { get; set; } = new();
-        //public List<Review> Reviews { get; set; } = new();
+        public List<Booking> Bookings { get; set; } = new();
+        public List<Review> Reviews { get; set; } = new();
     }
 }

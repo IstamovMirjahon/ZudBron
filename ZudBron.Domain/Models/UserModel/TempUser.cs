@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ZudBron.Domain.Abstractions;
 
 namespace ZudBron.Domain.Models.UserModel
 {
-    public class TempUser
+    public class TempUser : BaseEntity
     {
         [Required]
         [MaxLength(100)]
@@ -20,7 +21,7 @@ namespace ZudBron.Domain.Models.UserModel
         [MaxLength(256)]
         public string HashedPassword { get; set; } = null!;
 
-        public string VerificationCode { get; set; } = null!;
+        public int VerificationCode { get; set; }
 
         public DateTime ExpirationTime { get; set; } = DateTime.UtcNow.AddMinutes(2);
     }

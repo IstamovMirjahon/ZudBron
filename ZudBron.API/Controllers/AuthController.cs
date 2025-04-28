@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using ZudBron.Application.IService.IAuthServices;
 using ZudBron.Domain.DTOs.TokenDTOs;
 using ZudBron.Domain.DTOs.UserDTOs;
 
@@ -9,6 +10,11 @@ namespace ZudBron.API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private readonly IAuthService _authService;
+        public AuthController(IAuthService authService)
+        {
+            _authService = authService;
+        }
         [HttpPost]
         [SwaggerOperation(
             Summary = "User registratsiya qilish",
@@ -18,7 +24,9 @@ namespace ZudBron.API.Controllers
         {
             try
             {
-                return Ok();
+                var result = await _authService.SignUpService(request);
+
+                return result.IsSuccess ? Ok(result) : BadRequest(result);
             }
             catch (Exception ex)
             {
@@ -35,7 +43,9 @@ namespace ZudBron.API.Controllers
         {
             try
             {
-                return Ok();
+                var result = await _authService.SignInService(request);
+
+                return result.IsSuccess ? Ok(result) : BadRequest(result);
             }
             catch (Exception ex)
             {
@@ -52,7 +62,9 @@ namespace ZudBron.API.Controllers
         {
             try
             {
-                return Ok();
+                var result = await _authService.VerifyRegisterCodeService(request);
+
+                return result.IsSuccess ? Ok(result) : BadRequest(result);
             }
             catch (Exception ex)
             {
@@ -69,7 +81,9 @@ namespace ZudBron.API.Controllers
         {
             try
             {
-                return Ok();
+                var result = await _authService.ForgotPasswordService(request);
+
+                return result.IsSuccess ? Ok(result) : BadRequest(result);
             }
             catch (Exception ex)
             {
@@ -86,7 +100,9 @@ namespace ZudBron.API.Controllers
         {
             try
             {
-                return Ok();
+                var result = await _authService.VerifyForgotPasswordCodeService(request);
+
+                return result.IsSuccess ? Ok(result) : BadRequest(result);
             }
             catch (Exception ex)
             {
@@ -103,7 +119,9 @@ namespace ZudBron.API.Controllers
         {
             try
             {
-                return Ok();
+                var result = await _authService.ResetPasswordService(request);
+
+                return result.IsSuccess ? Ok(result) : BadRequest(result);
             }
             catch (Exception ex)
             {
@@ -154,7 +172,9 @@ namespace ZudBron.API.Controllers
         {
             try
             {
-                return Ok();
+                var result = await _authService.RefreshTokenService(request);
+
+                return result.IsSuccess ? Ok(result) : BadRequest(result);
             }
             catch (Exception ex)
             {
