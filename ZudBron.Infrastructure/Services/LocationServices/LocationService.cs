@@ -2,6 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Globalization;
 using ZudBron.Application.IService.ILocationServices;
 using ZudBron.Domain.DTOs.LocationDTO;
 
@@ -25,11 +26,10 @@ namespace ZudBron.Infrastructure.Services.LocationServices
             if (sportField == null || sportField.Location == null)
                 throw new Exception("Sport field yoki uning manzili topilmadi");
 
-            var destination = $"{sportField.Location.Latitude},{sportField.Location.Longitude}";
-            var origin = $"{request.UserLatitude},{request.UserLongitude}";
+            var origin = $"{request.UserLatitude.ToString(CultureInfo.InvariantCulture)},{request.UserLongitude.ToString(CultureInfo.InvariantCulture)}";
+            var destination = $"{sportField.Location.Latitude.ToString(CultureInfo.InvariantCulture)},{sportField.Location.Longitude.ToString(CultureInfo.InvariantCulture)}";
 
-            var url = $"https://www.google.com/maps/dir/?api=1" +
-                      $"&origin={origin}&destination={destination}&travelmode=driving";
+            var url = $"https://www.google.com/maps/dir/?api=1&origin={origin}&destination={destination}&travelmode=driving";
 
             return new RouteResponseDto { GoogleMapsUrl = url };
         }
