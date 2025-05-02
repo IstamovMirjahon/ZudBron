@@ -5,7 +5,7 @@ using ZudBron.Domain.DTOs.NotificationDTOs;
 namespace ZudBron.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class NotificationController : ControllerBase
     {
         private readonly INotificationService _notificationService;

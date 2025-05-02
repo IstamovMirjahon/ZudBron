@@ -1,5 +1,6 @@
 ﻿using ZudBron.Domain.StaticModels.SmtpModel;
 using Microsoft.OpenApi.Models;
+using ZudBron.Infrastructure;
 
 namespace ZudBron.API;
 
@@ -34,6 +35,7 @@ public class Program
 
         // Swagger settings
         services.AddEndpointsApiExplorer();
+        services.AddInfrastructureRegisterServices(configuration);
         services.AddSwaggerGen(options =>
         {
             options.EnableAnnotations();

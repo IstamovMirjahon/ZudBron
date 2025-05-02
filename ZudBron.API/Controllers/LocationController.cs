@@ -4,7 +4,7 @@ using ZudBron.Domain.DTOs.LocationDTO;
 
 namespace ZudBron.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class LocationController : ControllerBase
     {

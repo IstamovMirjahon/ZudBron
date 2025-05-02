@@ -5,7 +5,7 @@ using ZudBron.Domain.DTOs.FieldDTO;
 namespace ZudBron.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class SportFieldsController : ControllerBase
     {
         private readonly ISportFieldService _sportFieldService;

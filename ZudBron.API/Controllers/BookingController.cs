@@ -4,7 +4,7 @@ using ZudBron.Domain.DTOs.BookingDTOs;
 
 namespace ZudBron.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class BookingController : ControllerBase
     {
