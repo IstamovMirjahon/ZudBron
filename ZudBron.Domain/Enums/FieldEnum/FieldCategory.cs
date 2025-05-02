@@ -6,6 +6,7 @@
         Tennis,
         Bowling,
         Golf,
-        Playstation
+        Playstation,
+        Biliyard
     }
 }
