@@ -84,5 +84,49 @@ namespace ZudBron.Infrastructure.Repositories.AuthRepositories
             return await _applicationDbContext.Users
                 .FirstOrDefaultAsync(user => user.Id == id);
         }
+
+        public void ForgotPasswordDelete(ForgotPassword forgotPassword)
+        {
+            _applicationDbContext.ForgotPasswords.Remove(forgotPassword);
+        }
+
+        public async Task<User?> GetUserByPhoneAsync(string phoneNumber)
+        {
+            return await _applicationDbContext.Users
+                .FirstOrDefaultAsync(user => user.PhoneNumber == phoneNumber && !user.IsDeleted);
+        }
+
+        public async Task<TempUser?> GetTempUserByPhoneAsync(string phone)
+        {
+            return await _applicationDbContext.TempUsers
+                .FirstOrDefaultAsync(user => user.PhoneNumber == phone);
+        }
+
+        public Task SaveUpdateVerificationCodeByPhone(TempUser oldTempUser, TempUser newTempUser)
+        {
+            oldTempUser.FullName = newTempUser.FullName;
+            oldTempUser.PhoneNumber = newTempUser.PhoneNumber;
+            oldTempUser.HashedPassword = newTempUser.HashedPassword;
+            oldTempUser.VerificationCode = newTempUser.VerificationCode;
+            oldTempUser.ExpirationTime = newTempUser.ExpirationTime;
+
+            return Task.CompletedTask;
+        }
+
+        public async Task<ForgotPassword?> GetForgotPasswordByPhoneAsync(string phone)
+        {
+            return await _applicationDbContext.ForgotPasswords
+                .FirstOrDefaultAsync(user => user.PhoneNumber == phone);
+        }
+
+        public Task UpdateForgotPasswordByPhone(ForgotPassword oldForgotPassword, ForgotPassword newPassword)
+        {
+            oldForgotPassword.PhoneNumber = newPassword.PhoneNumber;
+            oldForgotPassword.VerificationCode = newPassword.VerificationCode;
+            oldForgotPassword.ExpirationTime = newPassword.ExpirationTime;
+            oldForgotPassword.IsUsed = newPassword.IsUsed;
+
+            return Task.CompletedTask;
+        }
     }
 }

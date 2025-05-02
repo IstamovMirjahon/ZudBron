@@ -12,15 +12,13 @@ namespace ZudBron.Domain.Models.UserModel
         [MaxLength(100)]
         public string FullName { get; set; } = null!;
 
-        [Required]
         [Phone]
         [MaxLength(20)]
-        public string PhoneNumber { get; set; } = null!;
+        public string? PhoneNumber { get; set; } = null!;
 
-        [Required]
         [EmailAddress]
         [MaxLength(100)]
-        public string Email { get; set; } = null!;
+        public string? Email { get; set; } = null!;
 
         [Required]
         [MaxLength(256)]

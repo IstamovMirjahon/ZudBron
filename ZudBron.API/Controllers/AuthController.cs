@@ -58,7 +58,7 @@ namespace ZudBron.API.Controllers
             Summary = "Register uchun kodni tasdiqlash",
             Description = "Emailingiz, yuborilgan kodni kiriting va bosing"
             )]
-        public async Task<IActionResult> VerifyRegisterCode([FromBody] RegisterVerificationCodeDto request)
+        public async Task<IActionResult> VerifyRegisterCodeByEmail([FromBody] RegisterVerificationCodeDto request)
         {
             try
             {
@@ -77,7 +77,7 @@ namespace ZudBron.API.Controllers
             Summary = "Parolni unutdingizmi?",
             Description = "Ro'yhatdan o'tgan emailingiz orqali parolingizni almashtiring"
             )]
-        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto request)
+        public async Task<IActionResult> ForgotPasswordByEmail([FromBody] ForgotPasswordDto request)
         {
             try
             {
@@ -94,9 +94,9 @@ namespace ZudBron.API.Controllers
         [HttpPost]
         [SwaggerOperation(
             Summary = "ForgotPassword uchun kodni tasdiqlash",
-            Description = "Emailingiz, yuborilgan kodni kiriting va bosing"
+            Description = "Emailingizga yuborilgan kodni kiriting va bosing"
             )]
-        public async Task<IActionResult> VerifyForgotPasswordCode([FromBody] ForgotPasswordVerificationCodeDto request)
+        public async Task<IActionResult> VerifyForgotPasswordCodeByEmail([FromBody] ForgotPasswordVerificationCodeDto request)
         {
             try
             {
@@ -113,9 +113,9 @@ namespace ZudBron.API.Controllers
         [HttpPost]
         [SwaggerOperation(
             Summary = "Parolni yangilash?",
-            Description = "Token, yangi parolingizni kiriting va parolingizni almashtiring"
+            Description = "Yangi parolingizni kiriting va parolingizni almashtiring"
             )]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequestDto request)
+        public async Task<IActionResult> ResetPasswordByEmail([FromBody] ResetPasswordRequestDto request)
         {
             try
             {
@@ -129,39 +129,119 @@ namespace ZudBron.API.Controllers
             }
         }
 
-        //[HttpPost]
-        //[SwaggerOperation(
-        //    Summary = "User registratsiya qilish",
-        //    Description = "User registratsiya qilish uchun ma'lumotlarni to'ldiring va bosing"
-        //    )]
-        //public async Task<IActionResult> SignUpByPhone([FromBody] UserRegisterByPhoneDto request)
-        //{
-        //    try
-        //    {
-        //        return Ok();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, new { Message = "Server xatosi", Error = ex.Message });
-        //    }
-        //}
+        [HttpPost]
+        [SwaggerOperation(
+            Summary = "User registratsiya qilish",
+            Description = "User registratsiya qilish uchun ma'lumotlarni to'ldiring va bosing"
+            )]
+        public async Task<IActionResult> SignUpByPhone([FromBody] UserRegisterByPhoneDto request)
+        {
+            try
+            {
+                var result = await _authService.SignUpByPhoneService(request);
 
-        //[HttpPost]
-        //[SwaggerOperation(
-        //    Summary = "Userning tizimga kirishi",
-        //    Description = "Userning tizimga kirishi uchun email va parolingizni kiriting va bosing"
-        //    )]
-        //public async Task<IActionResult> SignInByPhone([FromBody] SignInByPhoneDto request)
-        //{
-        //    try
-        //    {
-        //        return Ok();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, new { Message = "Server xatosi", Error = ex.Message });
-        //    }
-        //}
+                return result.IsSuccess ? Ok(result) : BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Server xatosi", Error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [SwaggerOperation(
+            Summary = "Userning tizimga kirishi",
+            Description = "Userning tizimga kirishi uchun PhoneNumber va parolingizni kiriting va bosing"
+            )]
+        public async Task<IActionResult> SignInByPhone([FromBody] SignInByPhoneDto request)
+        {
+            try
+            {
+                var result = await _authService.SignInByPhoneService(request);
+
+                return result.IsSuccess ? Ok(result) : BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Server xatosi", Error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [SwaggerOperation(
+            Summary = "Register uchun kodni tasdiqlash",
+            Description = "Emailingiz, yuborilgan kodni kiriting va bosing"
+            )]
+        public async Task<IActionResult> VerifyRegisterCodeByPhone([FromBody] RegisterVerificationCodeByPhoneDto request)
+        {
+            try
+            {
+                var result = await _authService.VerifyRegisterCodeByPhoneService(request);
+
+                return result.IsSuccess ? Ok(result) : BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Server xatosi", Error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [SwaggerOperation(
+            Summary = "Parolni unutdingizmi?",
+            Description = "Ro'yhatdan o'tgan PhoneNumber orqali parolingizni almashtiring"
+            )]
+        public async Task<IActionResult> ForgotPasswordByPhone([FromBody] ForgotPasswordByPhoneDto request)
+        {
+            try
+            {
+                var result = await _authService.ForgotPasswordByPhoneService(request);
+
+                return result.IsSuccess ? Ok(result) : BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [SwaggerOperation(
+            Summary = "ForgotPassword uchun kodni tasdiqlash",
+            Description = "PhoneNumberingizga yuborilgan kodni kiriting va bosing"
+            )]
+        public async Task<IActionResult> VerifyForgotPasswordCodeByPhone([FromBody] ForgotPasswordVerificationCodeByPhoneDto request)
+        {
+            try
+            {
+                var result = await _authService.VerifyForgotPasswordCodeByPhoneService(request);
+
+                return result.IsSuccess ? Ok(result) : BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [SwaggerOperation(
+            Summary = "Parolni yangilash?",
+            Description = "Yangi parolingizni kiriting va parolingizni almashtiring"
+            )]
+        public async Task<IActionResult> ResetPasswordByPhone([FromBody] ResetPasswordRequestByPhoneDto request)
+        {
+            try
+            {
+                var result = await _authService.ResetPasswordByPhoneService(request);
+
+                return result.IsSuccess ? Ok(result) : BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpPost]
         [SwaggerOperation(

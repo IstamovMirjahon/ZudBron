@@ -39,5 +39,17 @@ namespace ZudBron.Domain.Models.UserModel
         public static readonly Error UserNotFoundByRefreshToken = new(
             "User.RefreshToken.UserNotFound",
             "Berilgan refresh tokenga mos foydalanuvchi yo‘q.");
+
+        public static readonly Error PhoneNumberAlreadyRegistered = new(
+            "User.Register.PhoneNumberAlreadyExists",
+            "Bu telefon raqam oldin ro'yhatdan o'tgan.");
+
+        public static readonly Error VerificationPhoneNotFound = new(
+            "User.Verification.PhoneNotFound",
+            "Telefon raqam topilmadi!");
+
+        public static readonly Error PhoneNotRegistered = new(
+            "User.SignIn.PhoneNotFound",
+            "Hali ro'yhatdan o'tmagansiz, iltimos Register qiling.");
     }
 }

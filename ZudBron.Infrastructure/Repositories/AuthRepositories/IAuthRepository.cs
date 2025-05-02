@@ -15,5 +15,11 @@ namespace ZudBron.Infrastructure.Repositories.AuthRepositories
         Task UpdateForgotPassword(ForgotPassword oldForgotPassword, ForgotPassword newPassword);
         Task AddForgotPasswordAsync(ForgotPassword forgotPassword);
         Task<User?> GetByIdAsync(Guid id);
+        void ForgotPasswordDelete(ForgotPassword forgotPassword);
+        Task<User?> GetUserByPhoneAsync(string phoneNumber);
+        Task<TempUser?> GetTempUserByPhoneAsync(string phone);
+        Task SaveUpdateVerificationCodeByPhone(TempUser oldTempUser, TempUser newTempUser);
+        Task<ForgotPassword?> GetForgotPasswordByPhoneAsync(string phone);
+        Task UpdateForgotPasswordByPhone(ForgotPassword oldForgotPassword, ForgotPassword newPassword);
     }
 }

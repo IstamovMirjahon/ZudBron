@@ -7,7 +7,10 @@ namespace ZudBron.Domain.Models.UserModel
     {
         [EmailAddress]
         [MaxLength(100)]
-        public string Email { get; set; } = null!;
+        public string? Email { get; set; } = null!;
+        [Phone]
+        [MaxLength(20)]
+        public string? PhoneNumber { get; set; } = null!;
         public int VerificationCode { get; set; }
         public DateTime ExpirationTime { get; set; } = DateTime.UtcNow.AddMinutes(2);
         public bool IsUsed { get; set; } = false;
