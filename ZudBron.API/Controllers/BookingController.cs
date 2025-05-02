@@ -9,10 +9,12 @@ namespace ZudBron.API.Controllers
     public class BookingController : ControllerBase
     {
         private readonly IBookingService _bookingService;
+        private readonly IBookingCardService _bookingCardService;
 
-        public BookingController(IBookingService bookingService)
+        public BookingController(IBookingService bookingService, IBookingCardService bookingCardService)
         {
             _bookingService = bookingService;
+            _bookingCardService = bookingCardService;
         }
 
         // GET: api/Booking/{id}
@@ -107,6 +109,24 @@ namespace ZudBron.API.Controllers
                 return NotFound("No bookings found");
 
             return Ok(result.Value);
+        }
+
+        // GET: api/booking/user/{userId}
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetUserBookings(Guid userId)
+        {
+            var bookings = await _bookingCardService.GetUserBookingsAsync(userId);
+            return Ok(bookings);
+        }
+        // GET: api/booking/details/{bookingId}
+        [HttpGet("details/{bookingId}")]
+        public async Task<IActionResult> GetBookingDetails(Guid bookingId)
+        {
+            var booking = await _bookingCardService.GetBookingDetailsAsync(bookingId);
+            if (booking == null)
+                return NotFound("Booking not found");
+
+            return Ok(booking);
         }
     }
 }
