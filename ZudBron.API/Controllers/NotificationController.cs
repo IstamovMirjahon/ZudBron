@@ -35,5 +35,13 @@ namespace ZudBron.API.Controllers
             await _notificationService.MarkAsReadAsync(id);
             return Ok(new { message = "Notification marked as read." });
         }
+
+        [HttpPost("mark-all-as-read/{userId}")]
+        public async Task<IActionResult> MarkAllAsRead(Guid userId)
+        {
+            await _notificationService.MarkAllAsReadAsync(userId);
+            return Ok(new { message = "All notifications marked as read." });
+        }
+
     }
 }

@@ -65,6 +65,21 @@ namespace ZudBron.Infrastructure.Services.NotificationServices
             notification.IsRead = true;
             await _context.SaveChangesAsync();
         }
+
+        public async Task MarkAllAsReadAsync(Guid userId)
+        {
+            var notifications = await _context.Notifications
+                .Where(n => n.UserId == userId && !n.IsRead)
+                .ToListAsync();
+
+            foreach (var notification in notifications)
+            {
+                notification.IsRead = true;
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
     }
 
 }

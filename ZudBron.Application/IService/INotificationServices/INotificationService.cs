@@ -9,6 +9,8 @@ namespace ZudBron.Application.IService.INotificationServices
         Task<List<NotificationDto>> GetUserNotificationsAsync(Guid userId);
         Task<NotificationDto> CreateNotificationAsync(CreateNotificationDto dto);
         Task MarkAsReadAsync(Guid notificationId);
+        Task MarkAllAsReadAsync(Guid userId);
+
     }
 
 }
