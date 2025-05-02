@@ -1,6 +1,9 @@
 ﻿using ZudBron.Domain.StaticModels.SmtpModel;
 using Microsoft.OpenApi.Models;
 using ZudBron.Infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace ZudBron.API;
 
@@ -10,33 +13,38 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Configure Services
-        ConfigureServices(builder.Services, builder.Configuration);
+        // SmtpSettings sozlamalarini yuklash
+        builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 
-        var app = builder.Build();
-
-        // Configure Middleware
-        ConfigureMiddleware(app);
-
-        app.Run();
-    }
-
-    private static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
-    {
-        // SMTP settings
-        services.Configure<SmtpSettings>(configuration.GetSection("SmtpSettings"));
-
-        // JWT settings (validate)
-        var jwtSettings = configuration.GetSection("JwtSettings");
+        // JWT sozlamalarini yuklash
+        var jwtSettings = builder.Configuration.GetSection("JwtSettings");
         var secretKey = jwtSettings["Secret"] ?? throw new InvalidOperationException("JWT Secret is missing in configuration.");
 
-        // Add Controllers
-        services.AddControllers();
+        // JWT Authentication qo‘shish
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = jwtSettings["Issuer"],
+                ValidAudience = jwtSettings["Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+            };
+        });
 
-        // Swagger settings
-        services.AddEndpointsApiExplorer();
-        services.AddInfrastructureRegisterServices(configuration);
-        services.AddSwaggerGen(options =>
+        builder.Services.AddControllers();
+        builder.Services.AddEndpointsApiExplorer();
+
+        // Swagger + JWT auth konfiguratsiyasi
+        builder.Services.AddSwaggerGen(options =>
         {
             options.EnableAnnotations();
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -48,7 +56,6 @@ public class Program
                 In = ParameterLocation.Header,
                 Description = "Enter JWT Bearer token"
             });
-
             options.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
@@ -60,13 +67,15 @@ public class Program
                             Id = "Bearer"
                         }
                     },
-                    Array.Empty<string>()
+                    new string[] {}
                 }
             });
         });
 
-        // CORS policy
-        services.AddCors(options =>
+        // Infrastructure servislarini ro‘yxatdan o‘tkazish
+        builder.Services.AddInfrastructureRegisterServices(builder.Configuration);
+
+        builder.Services.AddCors(options =>
         {
             options.AddPolicy("AllowAll", policy =>
             {
@@ -76,31 +85,29 @@ public class Program
             });
         });
 
-        // Authentication, Authorization services
-        services.AddAuthentication();
-        services.AddAuthorization();
-    }
+        var app = builder.Build();
 
-    private static void ConfigureMiddleware(WebApplication app)
-    {
-        // Use HTTPS Redirection
-        app.UseHttpsRedirection();
+        app.UseCors("AllowAll");
 
-        // Enable Swagger (only in Development)
-        if (app.Environment.IsDevelopment())
+        app.Use(async (context, next) =>
+        {
+            context.Request.EnableBuffering();
+            await next();
+        });
+
+        if (app.Environment.IsDevelopment() || builder.Configuration.GetValue<bool>("SwaggerEnable"))
         {
             app.UseSwagger();
             app.UseSwaggerUI();
         }
 
-        // Enable CORS
-        app.UseCors("AllowAll");
+        // app.UseHttpsRedirection();
 
-        // Authentication and Authorization
+        // JWT Auth
         app.UseAuthentication();
         app.UseAuthorization();
 
-        // Map Controllers
         app.MapControllers();
+        app.Run();
     }
 }
