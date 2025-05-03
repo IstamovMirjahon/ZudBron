@@ -34,5 +34,12 @@ namespace ZudBron.API.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateLocation([FromBody] CreateLocationDto dto)
+        {
+            var locationId = await _locationService.CreateLocationAsync(dto);
+            return Ok(new { message = "Location created successfully", id = locationId });
+        }
     }
 }

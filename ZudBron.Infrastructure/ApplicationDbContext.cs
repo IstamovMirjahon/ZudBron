@@ -45,8 +45,20 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     public DbSet<TempUser> TempUsers { get; set; }
     public DbSet<ForgotPassword> ForgotPasswords { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
+    public DbSet<Location> Locations { get; set; }
 }
 
 
 
-  
+public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
+{
+    public ApplicationDbContext CreateDbContext(string[] args)
+    {
+        var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+
+        // Bu yerda connection string ni belgilang
+        optionsBuilder.UseNpgsql("Host=interchange.proxy.rlwy.net;Port=34711;Database=railway;Username=postgres;Password=JpRlcfiGedaCAyNfEWTeMBBaWltNMZqd");
+
+        return new ApplicationDbContext(optionsBuilder.Options);
+    }
+}

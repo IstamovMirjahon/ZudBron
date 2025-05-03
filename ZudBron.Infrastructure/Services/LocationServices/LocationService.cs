@@ -5,6 +5,7 @@ using System;
 using System.Globalization;
 using ZudBron.Application.IService.ILocationServices;
 using ZudBron.Domain.DTOs.LocationDTO;
+using ZudBron.Domain.Models.SportFieldModels;
 
 namespace ZudBron.Infrastructure.Services.LocationServices
 {
@@ -15,6 +16,24 @@ namespace ZudBron.Infrastructure.Services.LocationServices
         public LocationService(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<Guid> CreateLocationAsync(CreateLocationDto dto)
+        {
+            var location = new Location
+            {
+                Id = Guid.NewGuid(),
+                AddressLine = dto.AddressLine,
+                City = dto.City,
+                Region = dto.Region,
+                Country = dto.Country,
+                Latitude = dto.Latitude,
+                Longitude = dto.Longitude
+            };
+
+            _context.Locations.Add(location);
+            await _context.SaveChangesAsync();
+            return location.Id;
         }
 
         public async Task<RouteResponseDto> GetGoogleMapsRouteAsync(RouteRequestDto request)
