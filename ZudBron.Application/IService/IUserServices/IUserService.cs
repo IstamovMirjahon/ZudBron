@@ -11,5 +11,6 @@ namespace ZudBron.Application.IService.IUserServices
         Task<Result<string>> ChangeUserPhoneNumberService(ChangeUserPhoneNumberDto changeUserPhoneNumberDto, string Id);
         Task<Result<string>> VerifyChangeUserPhoneNumberCodeService(ChangeUserEmailOrPhoneNumberVerificationCodeDto changeUserEmailOrPhoneNumberVerification, string Id);
         Task<Result<string>> ChangePasswordService(ChangePasswordDto changePasswordDto, string Id);
+        Task<Result<string>> LogOutService(string id);
     }
 }

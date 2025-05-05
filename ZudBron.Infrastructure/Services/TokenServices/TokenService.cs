@@ -86,5 +86,16 @@ namespace ZudBron.Infrastructure.Services.TokenServices
             return await _applicationDbContext.RefreshTokens
                 .FirstOrDefaultAsync(rt => rt.Token == refreshToken);
         }
+
+        public async Task<RefreshToken?> GetTokenByUserId(Guid UserId)
+        {
+            return await _applicationDbContext.RefreshTokens
+                .FirstOrDefaultAsync(rt => rt.UserId == UserId);
+        }
+
+        public void DeleteRefreshToken(RefreshToken refreshToken)
+        {
+            _applicationDbContext.Remove(refreshToken);
+        }
     }
 }

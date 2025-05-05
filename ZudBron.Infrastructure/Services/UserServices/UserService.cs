@@ -1,5 +1,6 @@
 ﻿using Article.Domain.Abstractions;
 using ZudBron.Application.IService.IEmailServices;
+using ZudBron.Application.IService.ITokenServices;
 using ZudBron.Application.IService.IUserServices;
 using ZudBron.Domain.Abstractions;
 using ZudBron.Domain.DTOs.UserDTOs;
@@ -15,13 +16,15 @@ namespace ZudBron.Infrastructure.Services.UserServices
         private readonly IAuthRepository _authRepository;
         private readonly IEmailService _emailService;
         private readonly IUserRepository _userRepository;
+        private readonly ITokenService _tokenService;
 
-        public UserService(IUnitOfWork unitOfWork, IAuthRepository authRepository, IEmailService emailService, IUserRepository userRepository)
+        public UserService(IUnitOfWork unitOfWork, IAuthRepository authRepository, IEmailService emailService, IUserRepository userRepository, ITokenService tokenService)
         {
             _authRepository = authRepository;
             _emailService = emailService;
             _unitOfWork = unitOfWork;
             _userRepository = userRepository;
+            _tokenService = tokenService;
         }
 
         public async Task<Result<string>> ChangeUserFullNameService(ChangeUserFullNameDto changeUserFullNameDto, string userId)
@@ -122,7 +125,7 @@ namespace ZudBron.Infrastructure.Services.UserServices
                 user.Email = changeUserEmail.Email;
                 user.UpdateDate = DateTime.UtcNow;
 
-                _userRepository.ChangeUserDelete(changeUserEmail);  
+                _userRepository.ChangeUserDelete(changeUserEmail);
 
                 await _unitOfWork.SaveChangesAsync();
 
@@ -134,7 +137,7 @@ namespace ZudBron.Infrastructure.Services.UserServices
 
                 try
                 {
-                    if(changeUserEmail.Email != null)
+                    if (changeUserEmail.Email != null)
                         await _emailService.SendMessageEmail(changeUserEmail.Email, "Xush kelibsiz!", body);
                 }
                 catch (Exception ex)
@@ -179,7 +182,7 @@ namespace ZudBron.Infrastructure.Services.UserServices
                     await _userRepository.UpdateChangeUserEmailOrPhoneNumber(existingChangeEmailOrPhoneNumber, changeEmailOrPhoneNumber);
                 else
                     await _userRepository.AddChangeUserEmailOrPhoneNumber(changeEmailOrPhoneNumber);
-                
+
                 //Telefon raqamga tasdiqlash kodi jo'natish
 
                 await _unitOfWork.SaveChangesAsync(); // Emaildan keyin SaveChanges chaqiramiz!
@@ -240,7 +243,7 @@ namespace ZudBron.Infrastructure.Services.UserServices
                 if (user == null)
                     return Result<string>.Failure(UserError.UserNotFoundById);
 
-                if(!BCrypt.Net.BCrypt.Verify(changePasswordDto.CurrentPassword, user.PasswordHash))
+                if (!BCrypt.Net.BCrypt.Verify(changePasswordDto.CurrentPassword, user.PasswordHash))
                     return Result<string>.Failure(UserError.CurrentPassword);
 
                 user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(changePasswordDto.NewPassword);
@@ -255,5 +258,31 @@ namespace ZudBron.Infrastructure.Services.UserServices
                 return Result<string>.Failure(new Error("User.ChangePassword.ServerError", ex.Message));
             }
         }
+
+        public async Task<Result<string>> LogOutService(string id)
+        {
+            try
+            {
+                var userId = Guid.Parse(id);
+
+                var user = await _authRepository.GetByIdAsync(userId);
+                if (user == null)
+                    return Result<string>.Failure(UserError.UserNotFoundById);
+
+                var refreshToken = await _tokenService.GetTokenByUserId(userId);
+
+                if (refreshToken != null)
+                    _tokenService.DeleteRefreshToken(refreshToken);
+
+                await _unitOfWork.SaveChangesAsync();
+
+                return Result<string>.Success("Foydalanuvchi tizimdan muvaffaqiyatli chiqarildi");
+            }
+            catch (Exception ex)
+            {
+                return Result<string>.Failure(new Error("User.Logout.ServerError", ex.Message));
+            }
+        }
+
     }
 }

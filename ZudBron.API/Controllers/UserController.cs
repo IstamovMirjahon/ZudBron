@@ -162,5 +162,29 @@ namespace ZudBron.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpDelete]
+        [SwaggerOperation(
+            Summary = "Tizimdan chiqish",
+            Description = "Foydalanuvchi tizimdan chiqishi uchun bosing"
+            )]
+        public async Task<IActionResult> LogOut()
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized("Foydalanuvchi aniqlanmadi");
+
+                var result = await _userService.LogOutService(userId);
+
+                return result.IsSuccess ? Ok(result) : BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
