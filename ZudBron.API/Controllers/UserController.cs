@@ -45,10 +45,10 @@ namespace ZudBron.API.Controllers
 
         [HttpPut]
         [SwaggerOperation(
-            Summary = "Email ni yangilash?",
+            Summary = "Email ni yangilash yoki qo'shish?",
             Description = "Yangi Email kiriting va bosing"
             )]
-        public async Task<IActionResult> ChangeUserEmail([FromBody] ChangeUserEmailDto request)
+        public async Task<IActionResult> ChangeUserEmailOrAddUserEmail([FromBody] ChangeUserEmailDto request)
         {
             try
             {
@@ -72,7 +72,7 @@ namespace ZudBron.API.Controllers
             Summary = "ChangeUserEmail uchun kodni tasdiqlash",
             Description = "Emailga yuborilgan kodni kiriting va bosing"
             )]
-        public async Task<IActionResult> VerifyChangeUserEmailCode([FromBody] ChangeUserEmailVerificationCode request)
+        public async Task<IActionResult> VerifyChangeUserEmailOrAddUserEmailCode([FromBody] ChangeUserEmailOrPhoneNumberVerificationCode request)
         {
             try
             {
@@ -82,6 +82,54 @@ namespace ZudBron.API.Controllers
                     return Unauthorized("Foydalanuvchi aniqlanmadi");
 
                 var result = await _userService.VerifyChangeUserEmailCodeService(request, userId);
+
+                return result.IsSuccess ? Ok(result) : BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Server xatosi", Error = ex.Message });
+            }
+        }
+
+        [HttpPut]
+        [SwaggerOperation(
+            Summary = "PhoneNumber ni yangilash yoki qo'shish?",
+            Description = "Yangi PhoneNumber kiriting va bosing"
+            )]
+        public async Task<IActionResult> ChangeUserPhoneNumberOrAddUserPhoneNumber([FromBody] ChangeUserPhoneNumberDto request)
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized("Foydalanuvchi aniqlanmadi");
+
+                var result = await _userService.ChangeUserPhoneNumberService(request, userId);
+
+                return result.IsSuccess ? Ok(result) : BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [SwaggerOperation(
+            Summary = "ChangeUserPhoneNumber uchun kodni tasdiqlash",
+            Description = "Telefon raqamga yuborilgan kodni kiriting va bosing"
+            )]
+        public async Task<IActionResult> VerifyChangeUserPhoneNumberOrAddUserPhoneNumberCode([FromBody] ChangeUserEmailOrPhoneNumberVerificationCode request)
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized("Foydalanuvchi aniqlanmadi");
+
+                var result = await _userService.VerifyChangeUserPhoneNumberCodeService(request, userId);
 
                 return result.IsSuccess ? Ok(result) : BadRequest(result);
             }

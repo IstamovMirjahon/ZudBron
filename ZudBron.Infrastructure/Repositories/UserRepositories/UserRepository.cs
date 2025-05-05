@@ -30,7 +30,7 @@ namespace ZudBron.Infrastructure.Repositories.UserRepositories
             await _applicationDbContext.ChangeUserEmailOrPhoneNumbers.AddAsync(EmailOrPhoneNumber);
         }
 
-        public void ChangeUserEmailDelete(ChangeUserEmailOrPhoneNumber changeUserEmailOrPhoneNumber)
+        public void ChangeUserDelete(ChangeUserEmailOrPhoneNumber changeUserEmailOrPhoneNumber)
         {
             _applicationDbContext.ChangeUserEmailOrPhoneNumbers.Remove(changeUserEmailOrPhoneNumber);
         }

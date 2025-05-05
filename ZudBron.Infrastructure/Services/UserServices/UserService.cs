@@ -94,11 +94,11 @@ namespace ZudBron.Infrastructure.Services.UserServices
             }
             catch (Exception ex)
             {
-                return Result<string>.Failure(new Error("User.ChangeUserFullName.ServerError", ex.Message));
+                return Result<string>.Failure(new Error("User.ChangeUserEmail.ServerError", ex.Message));
             }
         }
 
-        public async Task<Result<string>> VerifyChangeUserEmailCodeService(ChangeUserEmailVerificationCode changeUserEmailVerificationCode, string Id)
+        public async Task<Result<string>> VerifyChangeUserEmailCodeService(ChangeUserEmailOrPhoneNumberVerificationCode changeUserEmailVerificationCode, string Id)
         {
             try
             {
@@ -122,7 +122,7 @@ namespace ZudBron.Infrastructure.Services.UserServices
                 user.Email = changeUserEmail.Email;
                 user.UpdateDate = DateTime.UtcNow;
 
-                _userRepository.ChangeUserEmailDelete(changeUserEmail);  
+                _userRepository.ChangeUserDelete(changeUserEmail);  
 
                 await _unitOfWork.SaveChangesAsync();
 
@@ -142,11 +142,91 @@ namespace ZudBron.Infrastructure.Services.UserServices
                     return Result<string>.Failure(new Error("User.ChangeUserEmail.SendEmailFailed", ex.Message));
                 }
 
-                return Result<string>.Success($"{changeUserEmail.Email} muvaffaqiyatli ro‘yxatdan o‘tdi");
+                return Result<string>.Success($"{changeUserEmail.Email} muvaffaqiyatli yangilandi");
             }
             catch (Exception ex)
             {
-                return Result<string>.Failure(new Error("User.ChangeUserEmail.ServerError", ex.Message));
+                return Result<string>.Failure(new Error("User.VerifyChangeUserEmailCode.ServerError", ex.Message));
+            }
+        }
+
+        public async Task<Result<string>> ChangeUserPhoneNumberService(ChangeUserPhoneNumberDto changeUserPhoneNumberDto, string Id)
+        {
+            try
+            {
+                var userId = Guid.Parse(Id);
+
+                var userById = await _authRepository.GetByIdAsync(userId);
+                if (userById == null)
+                    return Result<string>.Failure(UserError.UserNotFoundById);
+
+                var userByPhoneNumber = await _authRepository.GetUserByPhoneAsync(changeUserPhoneNumberDto.PhoneNumber);
+                if (userByPhoneNumber != null)
+                    return Result<string>.Failure(UserError.ChangeEmailAlreadyRegistered);
+
+                var code = _authRepository.GenerateCode();
+
+                var existingChangeEmailOrPhoneNumber = await _userRepository.GetChangeUserEmailOrPhoneNumberById(userId);
+
+                var changeEmailOrPhoneNumber = new ChangeUserEmailOrPhoneNumber
+                {
+                    UserId = userId,
+                    PhoneNumber = changeUserPhoneNumberDto.PhoneNumber,
+                    VerificationCode = code
+                };
+
+                if (existingChangeEmailOrPhoneNumber is not null)
+                    await _userRepository.UpdateChangeUserEmailOrPhoneNumber(existingChangeEmailOrPhoneNumber, changeEmailOrPhoneNumber);
+                else
+                    await _userRepository.AddChangeUserEmailOrPhoneNumber(changeEmailOrPhoneNumber);
+                
+                //Telefon raqamga tasdiqlash kodi jo'natish
+
+                await _unitOfWork.SaveChangesAsync(); // Emaildan keyin SaveChanges chaqiramiz!
+
+                return Result<string>.Success($"{changeUserPhoneNumberDto.PhoneNumber} ga tasdiqlash kodi yuborildi");
+            }
+            catch (Exception ex)
+            {
+                return Result<string>.Failure(new Error("User.ChangeUserPhoneNumber.ServerError", ex.Message));
+            }
+        }
+
+        public async Task<Result<string>> VerifyChangeUserPhoneNumberCodeService(ChangeUserEmailOrPhoneNumberVerificationCode changeUserEmailOrPhoneNumberVerification, string Id)
+        {
+            try
+            {
+                var userId = Guid.Parse(Id);
+
+                var changeUserPhoneNumber = await _userRepository.GetChangeUserEmailOrPhoneNumberById(userId);
+
+                if (changeUserPhoneNumber is null)
+                    return Result<string>.Failure(UserError.VerificationUserIdNotFound);
+
+                if (changeUserPhoneNumber.VerificationCode != changeUserEmailOrPhoneNumberVerification.Code)
+                    return Result<string>.Failure(UserError.IncorrectVerificationCode); // ❌ Tasdiqlash kodi noto‘g‘ri
+
+                if (DateTime.UtcNow > changeUserPhoneNumber.ExpirationTime)
+                    return Result<string>.Failure(UserError.VerificationCodeExpired); // ❌ Tasdiqlash kodi muddati o‘tgan
+
+                var user = await _authRepository.GetByIdAsync(userId);
+                if (user == null)
+                    return Result<string>.Failure(UserError.UserNotFoundById);
+
+                user.PhoneNumber = changeUserPhoneNumber.PhoneNumber;
+                user.UpdateDate = DateTime.UtcNow;
+
+                _userRepository.ChangeUserDelete(changeUserPhoneNumber);
+
+                await _unitOfWork.SaveChangesAsync();
+
+                // Telefon raqamga muvaffaqqiyatli ro'yhatdan o'tishi haqida xabar yuborish
+
+                return Result<string>.Success($"{changeUserPhoneNumber.PhoneNumber} muvaffaqiyatli yangilandi");
+            }
+            catch (Exception ex)
+            {
+                return Result<string>.Failure(new Error("User.VerifyChangeUserPhoneNumberCod.ServerError", ex.Message));
             }
         }
     }

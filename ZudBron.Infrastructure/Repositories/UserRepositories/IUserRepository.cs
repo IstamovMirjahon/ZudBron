@@ -7,6 +7,6 @@ namespace ZudBron.Infrastructure.Repositories.UserRepositories
         Task<ChangeUserEmailOrPhoneNumber?> GetChangeUserEmailOrPhoneNumberById(Guid userId);
         Task UpdateChangeUserEmailOrPhoneNumber(ChangeUserEmailOrPhoneNumber oldEmailOrPhoneNumber, ChangeUserEmailOrPhoneNumber newEmailOrPhoneNumber);
         Task AddChangeUserEmailOrPhoneNumber(ChangeUserEmailOrPhoneNumber EmailOrPhoneNumber);
-        void ChangeUserEmailDelete(ChangeUserEmailOrPhoneNumber changeUserEmailOrPhoneNumber);
+        void ChangeUserDelete(ChangeUserEmailOrPhoneNumber changeUserEmailOrPhoneNumber);
     }
 }

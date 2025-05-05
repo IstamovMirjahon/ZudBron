@@ -82,7 +82,7 @@ namespace ZudBron.Infrastructure.Repositories.AuthRepositories
         public async Task<User?> GetByIdAsync(Guid id)
         {
             return await _applicationDbContext.Users
-                .FirstOrDefaultAsync(user => user.Id == id);
+                .FirstOrDefaultAsync(user => user.Id == id && !user.IsDeleted);
         }
 
         public void ForgotPasswordDelete(ForgotPassword forgotPassword)

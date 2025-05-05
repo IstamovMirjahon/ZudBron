@@ -7,6 +7,8 @@ namespace ZudBron.Application.IService.IUserServices
     {
         Task<Result<string>> ChangeUserFullNameService(ChangeUserFullNameDto changeUserFullNameDto, string userId);
         Task<Result<string>> ChangeUserEmailService(ChangeUserEmailDto changeUserEmailDto, string Id);
-        Task<Result<string>> VerifyChangeUserEmailCodeService(ChangeUserEmailVerificationCode changeUserEmailVerificationCode, string Id);
+        Task<Result<string>> VerifyChangeUserEmailCodeService(ChangeUserEmailOrPhoneNumberVerificationCode changeUserEmailVerificationCode, string Id);
+        Task<Result<string>> ChangeUserPhoneNumberService(ChangeUserPhoneNumberDto changeUserPhoneNumberDto, string Id);
+        Task<Result<string>> VerifyChangeUserPhoneNumberCodeService(ChangeUserEmailOrPhoneNumberVerificationCode changeUserEmailOrPhoneNumberVerification, string Id);
     }
 }
