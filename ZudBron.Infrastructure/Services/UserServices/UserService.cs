@@ -98,7 +98,7 @@ namespace ZudBron.Infrastructure.Services.UserServices
             }
         }
 
-        public async Task<Result<string>> VerifyChangeUserEmailCodeService(ChangeUserEmailOrPhoneNumberVerificationCode changeUserEmailVerificationCode, string Id)
+        public async Task<Result<string>> VerifyChangeUserEmailCodeService(ChangeUserEmailOrPhoneNumberVerificationCodeDto changeUserEmailVerificationCode, string Id)
         {
             try
             {
@@ -192,7 +192,7 @@ namespace ZudBron.Infrastructure.Services.UserServices
             }
         }
 
-        public async Task<Result<string>> VerifyChangeUserPhoneNumberCodeService(ChangeUserEmailOrPhoneNumberVerificationCode changeUserEmailOrPhoneNumberVerification, string Id)
+        public async Task<Result<string>> VerifyChangeUserPhoneNumberCodeService(ChangeUserEmailOrPhoneNumberVerificationCodeDto changeUserEmailOrPhoneNumberVerification, string Id)
         {
             try
             {
@@ -227,6 +227,32 @@ namespace ZudBron.Infrastructure.Services.UserServices
             catch (Exception ex)
             {
                 return Result<string>.Failure(new Error("User.VerifyChangeUserPhoneNumberCod.ServerError", ex.Message));
+            }
+        }
+
+        public async Task<Result<string>> ChangePasswordService(ChangePasswordDto changePasswordDto, string Id)
+        {
+            try
+            {
+                var userId = Guid.Parse(Id);
+
+                var user = await _authRepository.GetByIdAsync(userId);
+                if (user == null)
+                    return Result<string>.Failure(UserError.UserNotFoundById);
+
+                if(!BCrypt.Net.BCrypt.Verify(changePasswordDto.CurrentPassword, user.PasswordHash))
+                    return Result<string>.Failure(UserError.CurrentPassword);
+
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(changePasswordDto.NewPassword);
+                user.UpdateDate = DateTime.UtcNow;
+
+                await _unitOfWork.SaveChangesAsync();
+
+                return Result<string>.Success($"Parol muvaffaqqiyatli o'zgartirildi");
+            }
+            catch (Exception ex)
+            {
+                return Result<string>.Failure(new Error("User.ChangePassword.ServerError", ex.Message));
             }
         }
     }

@@ -63,5 +63,9 @@ namespace ZudBron.Domain.Models.UserModel
         public static readonly Error VerificationUserIdNotFound = new(
            "User.Verification.UserIdNotFound",
            "UserId topilmadi!");
+
+        public static readonly Error CurrentPassword = new(
+            "User.CurrentPassword.IncorrectPassword",
+            "Parol xato!");
     }
 }

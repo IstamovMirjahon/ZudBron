@@ -72,7 +72,7 @@ namespace ZudBron.API.Controllers
             Summary = "ChangeUserEmail uchun kodni tasdiqlash",
             Description = "Emailga yuborilgan kodni kiriting va bosing"
             )]
-        public async Task<IActionResult> VerifyChangeUserEmailOrAddUserEmailCode([FromBody] ChangeUserEmailOrPhoneNumberVerificationCode request)
+        public async Task<IActionResult> VerifyChangeUserEmailOrAddUserEmailCode([FromBody] ChangeUserEmailOrPhoneNumberVerificationCodeDto request)
         {
             try
             {
@@ -120,7 +120,7 @@ namespace ZudBron.API.Controllers
             Summary = "ChangeUserPhoneNumber uchun kodni tasdiqlash",
             Description = "Telefon raqamga yuborilgan kodni kiriting va bosing"
             )]
-        public async Task<IActionResult> VerifyChangeUserPhoneNumberOrAddUserPhoneNumberCode([FromBody] ChangeUserEmailOrPhoneNumberVerificationCode request)
+        public async Task<IActionResult> VerifyChangeUserPhoneNumberOrAddUserPhoneNumberCode([FromBody] ChangeUserEmailOrPhoneNumberVerificationCodeDto request)
         {
             try
             {
@@ -136,6 +136,30 @@ namespace ZudBron.API.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { Message = "Server xatosi", Error = ex.Message });
+            }
+        }
+
+        [HttpPut]
+        [SwaggerOperation(
+            Summary = "Parolni yangilash?",
+            Description = "Yangi parol kiriting va bosing"
+            )]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto request)
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized("Foydalanuvchi aniqlanmadi");
+
+                var result = await _userService.ChangePasswordService(request, userId);
+
+                return result.IsSuccess ? Ok(result) : BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }

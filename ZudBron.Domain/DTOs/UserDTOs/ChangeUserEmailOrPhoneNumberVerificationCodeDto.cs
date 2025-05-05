@@ -2,7 +2,7 @@
 
 namespace ZudBron.Domain.DTOs.UserDTOs
 {
-    public class ChangeUserEmailOrPhoneNumberVerificationCode
+    public class ChangeUserEmailOrPhoneNumberVerificationCodeDto
     {
         [Required]
         public int Code { get; set; }
