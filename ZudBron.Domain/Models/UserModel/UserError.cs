@@ -51,5 +51,17 @@ namespace ZudBron.Domain.Models.UserModel
         public static readonly Error PhoneNotRegistered = new(
             "User.SignIn.PhoneNotFound",
             "Hali ro'yhatdan o'tmagansiz, iltimos Register qiling.");
+
+        public static readonly Error UserNotFoundById = new(
+            "User.Id.UserNotFound",
+            "Berilgan idga mos foydalanuvchi yo‘q.");
+
+        public static readonly Error ChangeEmailAlreadyRegistered = new(
+            "User.ChangeEmail.EmailAlreadyExists",
+            "Bu email oldin ro'yhatdan o'tgan.");
+
+        public static readonly Error VerificationUserIdNotFound = new(
+           "User.Verification.UserIdNotFound",
+           "UserId topilmadi!");
     }
 }
