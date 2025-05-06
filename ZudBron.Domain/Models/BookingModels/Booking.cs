@@ -1,6 +1,6 @@
 ﻿using ZudBron.Domain.Abstractions;
 using ZudBron.Domain.Enums.BookingEnum;
-using ZudBron.Domain.Enums.FieldEnum;
+using ZudBron.Domain.Models.FieldCategories;
 using ZudBron.Domain.Models.SportFieldModels;
 using ZudBron.Domain.Models.UserModel;
 

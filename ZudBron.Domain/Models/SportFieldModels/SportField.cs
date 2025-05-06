@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using ZudBron.Domain.Abstractions;
-using ZudBron.Domain.Enums.FieldEnum;
+using ZudBron.Domain.Models.FieldCategories;
 using ZudBron.Domain.Models.FieldSchedules;
 using ZudBron.Domain.Models.Media;
 using ZudBron.Domain.Models.Reviews;
@@ -32,7 +32,7 @@ namespace ZudBron.Domain.Models.SportFieldModels
         public Location? Location { get; set; }
 
         [Required(ErrorMessage = "Kategoriya majburiy")]
-        public FieldCategory Category { get; set; }
+        public FieldCategory? Category { get; set; }
 
         [Required(ErrorMessage = "Egasining ID raqami majburiy")]
         public Guid OwnerId { get; set; }
