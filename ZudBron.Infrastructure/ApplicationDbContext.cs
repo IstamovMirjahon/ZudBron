@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using ZudBron.Domain.Abstractions;
 using ZudBron.Domain.Models.BookingModels;
+using ZudBron.Domain.Models.FieldCategories;
 using ZudBron.Domain.Models.Media;
 using ZudBron.Domain.Models.NotificationModels;
 using ZudBron.Domain.Models.PaymentModels;
@@ -46,8 +47,6 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     public DbSet<ForgotPassword> ForgotPasswords { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Location> Locations { get; set; }
-
-    public DbSet<PaymentClick> PaymentClicks { get; set; }
 }
 
 
