@@ -12,11 +12,49 @@ namespace ZudBron.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "ChangeUserEmailOrPhoneNumbers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    PhoneNumber = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    VerificationCode = table.Column<int>(type: "integer", nullable: false),
+                    ExpirationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChangeUserEmailOrPhoneNumbers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FieldCategories",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    IconUrl = table.Column<string>(type: "text", nullable: true),
+                    ImageUrl = table.Column<string>(type: "text", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    DisplayOrder = table.Column<int>(type: "integer", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeleteDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FieldCategories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ForgotPasswords",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    PhoneNumber = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
                     VerificationCode = table.Column<int>(type: "integer", nullable: false),
                     ExpirationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     IsUsed = table.Column<bool>(type: "boolean", nullable: false)
@@ -27,7 +65,7 @@ namespace ZudBron.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Location",
+                name: "Locations",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -40,7 +78,24 @@ namespace ZudBron.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Location", x => x.Id);
+                    table.PrimaryKey("PK_Locations", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PaymentClicks",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TransactionId = table.Column<string>(type: "text", nullable: false),
+                    MerchantTransactionId = table.Column<string>(type: "text", nullable: false),
+                    MerchantPrepareId = table.Column<string>(type: "text", nullable: false),
+                    Amount = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentClicks", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -92,8 +147,8 @@ namespace ZudBron.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     FullName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    PhoneNumber = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                    Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     PasswordHash = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     Role = table.Column<int>(type: "integer", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -144,7 +199,7 @@ namespace ZudBron.Infrastructure.Migrations
                     OpenHour = table.Column<TimeSpan>(type: "interval", nullable: false),
                     CloseHour = table.Column<TimeSpan>(type: "interval", nullable: false),
                     LocationId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Category = table.Column<int>(type: "integer", nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
                     OwnerId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -155,9 +210,15 @@ namespace ZudBron.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_SportFields", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SportFields_Location_LocationId",
+                        name: "FK_SportFields_FieldCategories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "FieldCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SportFields_Locations_LocationId",
                         column: x => x.LocationId,
-                        principalTable: "Location",
+                        principalTable: "Locations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -175,6 +236,8 @@ namespace ZudBron.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     SportFieldId = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    HourlyPrice = table.Column<decimal>(type: "numeric", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "numeric", nullable: false),
                     StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     BookingStatus = table.Column<int>(type: "integer", nullable: false),
@@ -185,7 +248,7 @@ namespace ZudBron.Infrastructure.Migrations
                     BookingReference = table.Column<string>(type: "text", nullable: true),
                     BookingCode = table.Column<string>(type: "text", nullable: true),
                     BookingType = table.Column<string>(type: "text", nullable: true),
-                    BookingCategory = table.Column<int>(type: "integer", nullable: true),
+                    BookingCategoryId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeleteDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -194,6 +257,11 @@ namespace ZudBron.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Bookings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Bookings_FieldCategories_BookingCategoryId",
+                        column: x => x.BookingCategoryId,
+                        principalTable: "FieldCategories",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Bookings_SportFields_SportFieldId",
                         column: x => x.SportFieldId,
@@ -360,6 +428,11 @@ namespace ZudBron.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Bookings_BookingCategoryId",
+                table: "Bookings",
+                column: "BookingCategoryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Bookings_SportFieldId",
                 table: "Bookings",
                 column: "SportFieldId");
@@ -425,6 +498,11 @@ namespace ZudBron.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SportFields_CategoryId",
+                table: "SportFields",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SportFields_LocationId",
                 table: "SportFields",
                 column: "LocationId");
@@ -439,6 +517,9 @@ namespace ZudBron.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "ChangeUserEmailOrPhoneNumbers");
+
+            migrationBuilder.DropTable(
                 name: "ForgotPasswords");
 
             migrationBuilder.DropTable(
@@ -446,6 +527,9 @@ namespace ZudBron.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Notifications");
+
+            migrationBuilder.DropTable(
+                name: "PaymentClicks");
 
             migrationBuilder.DropTable(
                 name: "Payments");
@@ -475,7 +559,10 @@ namespace ZudBron.Infrastructure.Migrations
                 name: "SportFields");
 
             migrationBuilder.DropTable(
-                name: "Location");
+                name: "FieldCategories");
+
+            migrationBuilder.DropTable(
+                name: "Locations");
 
             migrationBuilder.DropTable(
                 name: "Users");

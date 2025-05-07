@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ZudBron.Application.IService.IFieldServices;
 using ZudBron.Domain.DTOs.FieldDTO;
 using ZudBron.Domain.Enums.FieldEnum;
+using ZudBron.Domain.Models.FieldCategories;
 using ZudBron.Domain.Models.Media;
 using ZudBron.Domain.Models.SportFieldModels;
 
@@ -23,6 +24,7 @@ namespace ZudBron.Infrastructure.Services.FieldService
                 .Include(x => x.Location)
                 .Include(x => x.MediaFiles)
                 .Include(x => x.Owner)
+                .Include(x=>x.Category)
                 .Select(x => new SportFieldDto
                 {
                     Id = x.Id,
@@ -33,7 +35,8 @@ namespace ZudBron.Infrastructure.Services.FieldService
                     CloseHour = x.CloseHour,
                     LocationId = x.LocationId,
                     LocationName = x.Location!.AddressLine,
-                    Category = x.Category.ToString(),
+                    CategoryId = x.Category.Id, // yangi qo‘shildi
+                    CategoryName = x.Category!.Name, // yangi qo‘shildi
                     OwnerId = x.OwnerId,
                     OwnerFullName = x.Owner!.FullName,
                     MediaUrls = x.MediaFiles!.Select(m => m.FilePath).ToList()
@@ -46,6 +49,7 @@ namespace ZudBron.Infrastructure.Services.FieldService
                 .Include(x => x.Location)
                 .Include(x => x.MediaFiles)
                 .Include(x => x.Owner)
+                .Include (x => x.Category)  
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (field == null) return null;
@@ -60,7 +64,8 @@ namespace ZudBron.Infrastructure.Services.FieldService
                 CloseHour = field.CloseHour,
                 LocationId = field.LocationId,
                 LocationName = field.Location?.AddressLine,
-                Category = field.Category.ToString(),
+                CategoryId = field.Category.Id, // yangi qo‘shildi
+                CategoryName = field.Category!.Name, // yangi qo‘shildi
                 OwnerId = field.OwnerId,
                 OwnerFullName = field.Owner?.FullName,
                 MediaUrls = field.MediaFiles?.Select(m => m.FilePath).ToList()
@@ -78,7 +83,7 @@ namespace ZudBron.Infrastructure.Services.FieldService
                 OpenHour = dto.OpenHour,
                 CloseHour = dto.CloseHour,
                 LocationId = dto.LocationId,
-                Category = Enum.Parse<FieldCategory>(dto.Category!),
+                CategoryId = dto.CategoryId,
                 OwnerId = dto.OwnerId,
                 MediaFiles = dto.MediaFileIds != null
                     ? await _context.MediaFiles.Where(m => dto.MediaFileIds.Contains(m.Id)).ToListAsync()
@@ -104,7 +109,7 @@ namespace ZudBron.Infrastructure.Services.FieldService
             field.OpenHour = dto.OpenHour;
             field.CloseHour = dto.CloseHour;
             field.LocationId = dto.LocationId;
-            field.Category = Enum.Parse<FieldCategory>(dto.Category!);
+            field.CategoryId = dto.CategoryId;
             field.OwnerId = dto.OwnerId;
 
             if (dto.MediaFileIds != null)
@@ -156,6 +161,7 @@ namespace ZudBron.Infrastructure.Services.FieldService
                 .Include(f => f.Owner)
                 .Include(f => f.MediaFiles)
                 .Include(f => f.Reviews)
+                .Include(f=>f.Category)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(filter.Name))
@@ -164,8 +170,9 @@ namespace ZudBron.Infrastructure.Services.FieldService
             if (filter.LocationId.HasValue)
                 query = query.Where(f => f.LocationId == filter.LocationId.Value);
 
-            if (filter.Category.HasValue)
-                query = query.Where(f => f.Category == filter.Category.Value);
+            if (filter.CategoryId.HasValue)
+                query = query.Where(f => f.CategoryId == filter.CategoryId.Value);
+
 
             if (filter.MinPrice.HasValue)
                 query = query.Where(f => f.PricePerHour >= filter.MinPrice.Value);
@@ -191,7 +198,8 @@ namespace ZudBron.Infrastructure.Services.FieldService
                 CloseHour = f.CloseHour,
                 LocationId = f.LocationId,
                 LocationName = f.Location?.AddressLine,
-                Category = f.Category.ToString(),
+                CategoryId = f.CategoryId,
+                CategoryName = f.Category?.Name,
                 OwnerId = f.OwnerId,
                 OwnerFullName = f.Owner?.FullName,
                 MediaUrls = f.MediaFiles?.Select(m => m.FilePath).ToList(),

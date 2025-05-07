@@ -1,4 +1,6 @@
 ﻿
+using ZudBron.Domain.Models.FieldCategories;
+
 namespace ZudBron.Domain.DTOs.FieldDTO
 {
     public class SportFieldDto
@@ -12,7 +14,8 @@ namespace ZudBron.Domain.DTOs.FieldDTO
         public Guid LocationId { get; set; }
         public string? LocationName { get; set; } // optional
 
-        public string? Category { get; set; }
+        public Guid CategoryId { get; set; }
+        public string? CategoryName { get; set; }
         public Guid OwnerId { get; set; }
         public string? OwnerFullName { get; set; }
 

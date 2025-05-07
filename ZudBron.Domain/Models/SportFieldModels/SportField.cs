@@ -32,7 +32,8 @@ namespace ZudBron.Domain.Models.SportFieldModels
         public Location? Location { get; set; }
 
         [Required(ErrorMessage = "Kategoriya majburiy")]
-        public FieldCategory? Category { get; set; }
+        public Guid CategoryId { get; set; }
+        public FieldCategory Category { get; set; } = null!;
 
         [Required(ErrorMessage = "Egasining ID raqami majburiy")]
         public Guid OwnerId { get; set; }

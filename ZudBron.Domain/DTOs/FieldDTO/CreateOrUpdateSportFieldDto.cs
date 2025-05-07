@@ -1,4 +1,7 @@
 ﻿
+using ZudBron.Domain.Models.FieldCategories;
+using ZudBron.Domain.Models.SportFieldModels;
+
 namespace ZudBron.Domain.DTOs.FieldDTO
 {
     public class CreateOrUpdateSportFieldDto
@@ -10,7 +13,8 @@ namespace ZudBron.Domain.DTOs.FieldDTO
         public TimeSpan CloseHour { get; set; }
         public Guid LocationId { get; set; }
 
-        public string? Category { get; set; }
+        public Guid CategoryId { get; set; }
+        public string? CategoryName { get; set; }
         public Guid OwnerId { get; set; }
 
         public List<Guid>? MediaFileIds { get; set; } // Fayllar oldindan yuklab qo‘yilgan bo‘lsa

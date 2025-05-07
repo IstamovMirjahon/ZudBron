@@ -12,8 +12,8 @@ using ZudBron.Infrastructure;
 namespace ZudBron.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250503043050_twice")]
-    partial class twice
+    [Migration("20250507194112_first")]
+    partial class first
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,8 +31,8 @@ namespace ZudBron.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int?>("BookingCategory")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("BookingCategoryId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("BookingCode")
                         .HasColumnType("text");
@@ -58,6 +58,9 @@ namespace ZudBron.Infrastructure.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<decimal>("HourlyPrice")
+                        .HasColumnType("numeric");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -76,6 +79,9 @@ namespace ZudBron.Infrastructure.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("numeric");
+
                     b.Property<DateTime?>("UpdateDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -84,11 +90,55 @@ namespace ZudBron.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BookingCategoryId");
+
                     b.HasIndex("SportFieldId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Bookings");
+                });
+
+            modelBuilder.Entity("ZudBron.Domain.Models.FieldCategories.FieldCategory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("IconUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FieldCategories");
                 });
 
             modelBuilder.Entity("ZudBron.Domain.Models.FieldSchedules.FieldSchedule", b =>
@@ -314,6 +364,38 @@ namespace ZudBron.Infrastructure.Migrations
                     b.ToTable("Payments");
                 });
 
+            modelBuilder.Entity("ZudBron.Domain.Models.PaymentModels.PaymentClick", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("MerchantPrepareId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("MerchantTransactionId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TransactionId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PaymentClicks");
+                });
+
             modelBuilder.Entity("ZudBron.Domain.Models.Reviews.Review", b =>
                 {
                     b.Property<Guid>("Id")
@@ -399,8 +481,8 @@ namespace ZudBron.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("Category")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uuid");
 
                     b.Property<TimeSpan>("CloseHour")
                         .HasColumnType("interval");
@@ -440,11 +522,41 @@ namespace ZudBron.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.HasIndex("LocationId");
 
                     b.HasIndex("OwnerId");
 
                     b.ToTable("SportFields");
+                });
+
+            modelBuilder.Entity("ZudBron.Domain.Models.UserModel.ChangeUserEmailOrPhoneNumber", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime>("ExpirationTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("VerificationCode")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ChangeUserEmailOrPhoneNumbers");
                 });
 
             modelBuilder.Entity("ZudBron.Domain.Models.UserModel.ForgotPassword", b =>
@@ -577,6 +689,10 @@ namespace ZudBron.Infrastructure.Migrations
 
             modelBuilder.Entity("ZudBron.Domain.Models.BookingModels.Booking", b =>
                 {
+                    b.HasOne("ZudBron.Domain.Models.FieldCategories.FieldCategory", "BookingCategory")
+                        .WithMany()
+                        .HasForeignKey("BookingCategoryId");
+
                     b.HasOne("ZudBron.Domain.Models.SportFieldModels.SportField", "SportField")
                         .WithMany()
                         .HasForeignKey("SportFieldId")
@@ -588,6 +704,8 @@ namespace ZudBron.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("BookingCategory");
 
                     b.Navigation("SportField");
 
@@ -690,6 +808,12 @@ namespace ZudBron.Infrastructure.Migrations
 
             modelBuilder.Entity("ZudBron.Domain.Models.SportFieldModels.SportField", b =>
                 {
+                    b.HasOne("ZudBron.Domain.Models.FieldCategories.FieldCategory", "Category")
+                        .WithMany("SportFields")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ZudBron.Domain.Models.SportFieldModels.Location", "Location")
                         .WithMany()
                         .HasForeignKey("LocationId")
@@ -702,9 +826,16 @@ namespace ZudBron.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Category");
+
                     b.Navigation("Location");
 
                     b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("ZudBron.Domain.Models.FieldCategories.FieldCategory", b =>
+                {
+                    b.Navigation("SportFields");
                 });
 
             modelBuilder.Entity("ZudBron.Domain.Models.FieldSchedules.FieldSchedule", b =>
