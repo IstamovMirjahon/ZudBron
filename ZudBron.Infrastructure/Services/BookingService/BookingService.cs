@@ -1,6 +1,7 @@
 ﻿using Article.Domain.Abstractions;
 using AutoMapper;
 using ZudBron.Application.IService.IBookingService;
+using ZudBron.Application.IService.IFieldServices;
 using ZudBron.Domain.Abstractions;
 using ZudBron.Domain.DTOs.BookingDTOs;
 using ZudBron.Domain.Enums.BookingEnum;
@@ -12,14 +13,16 @@ namespace ZudBron.Infrastructure.Services.BookingService
     public class BookingService : IBookingService
     {
         private readonly IBookingRepository _bookingRepository;
+        private readonly ISportFieldService _sportFieldRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
 
-        public BookingService(IBookingRepository bookingRepository, IMapper mapper, IUnitOfWork unitOfWork)
+        public BookingService(IBookingRepository bookingRepository, IMapper mapper, IUnitOfWork unitOfWork, ISportFieldService sportFieldService)
         {
             _bookingRepository = bookingRepository;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _sportFieldRepository = sportFieldService;
         }
 
         public async Task<Result<BookingResponseDto>> GetBookingByIdAsync(Guid bookingId, CancellationToken cancellationToken = default)
@@ -50,6 +53,19 @@ namespace ZudBron.Infrastructure.Services.BookingService
         {
             try
             {
+                // SportField ma'lumotini olish (narxni olish uchun)
+                var sportField = await _sportFieldRepository.GetByIdAsync(bookingDto.SportFieldId);
+                if (sportField == null)
+                    return Result<BookingResponseDto>.Failure(new Error("Booking.Create", "Sport maydoni topilmadi."));
+
+                var hourlyPrice = sportField.PricePerHour; // Bu maydon modelida bo‘lishi kerak
+
+                var duration = (bookingDto.EndDate - bookingDto.StartDate).TotalHours;
+                if (duration <= 0)
+                    return Result<BookingResponseDto>.Failure(new Error("Booking.Create", "Boshlanish va tugash vaqtlari noto‘g‘ri."));
+
+                var totalAmount = hourlyPrice * (decimal)duration;
+
                 var booking = new Booking
                 {
                     Id = Guid.NewGuid(),
@@ -59,6 +75,8 @@ namespace ZudBron.Infrastructure.Services.BookingService
                     EndDate = bookingDto.EndDate,
                     Description = bookingDto.Description,
                     BookingType = bookingDto.BookingType,
+                    HourlyPrice = hourlyPrice,
+                    TotalAmount = totalAmount,
                     CreateDate = DateTime.UtcNow,
                     UpdateDate = DateTime.UtcNow,
                     BookingStatus = BookingStatus.Pending,

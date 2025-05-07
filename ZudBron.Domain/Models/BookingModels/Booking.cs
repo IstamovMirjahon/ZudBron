@@ -1,6 +1,6 @@
 ﻿using ZudBron.Domain.Abstractions;
 using ZudBron.Domain.Enums.BookingEnum;
-using ZudBron.Domain.Enums.FieldEnum;
+using ZudBron.Domain.Models.FieldCategories;
 using ZudBron.Domain.Models.SportFieldModels;
 using ZudBron.Domain.Models.UserModel;
 
@@ -10,6 +10,8 @@ namespace ZudBron.Domain.Models.BookingModels
     {
         public Guid SportFieldId { get; set; }
         public Guid UserId { get; set; }
+        public decimal HourlyPrice { get; set; }        // SportField narxi bron paytida (snapshot)
+        public decimal TotalAmount { get; set; }        // Soatga ko‘paytirilgan umumiy narx
 
         public DateTime StartDate { get; set; }     // Boshlanish vaqti
         public DateTime EndDate { get; set; }       // Tugash vaqti

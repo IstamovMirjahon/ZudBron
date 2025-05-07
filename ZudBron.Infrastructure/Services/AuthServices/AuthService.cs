@@ -33,6 +33,7 @@ namespace ZudBron.Infrastructure.Services.AuthServices
                 return Result<string>.Failure(UserError.EmailAlreadyRegistered);
 
             var code = _authRepository.GenerateCode();
+
             var existingTempUser = await _authRepository.GetTempUserByEmailAsync(email);
 
             var tempUser = new TempUser
@@ -82,14 +83,10 @@ namespace ZudBron.Infrastructure.Services.AuthServices
                     return Result<string>.Failure(UserError.VerificationEmailNotFound); // ❌ Email topilmadi
 
                 if (tempUser.VerificationCode != registerVerificationCode.Code)
-                {
                     return Result<string>.Failure(UserError.IncorrectVerificationCode); // ❌ Tasdiqlash kodi noto‘g‘ri
-                }
 
                 if (DateTime.UtcNow > tempUser.ExpirationTime)
-                {
                     return Result<string>.Failure(UserError.VerificationCodeExpired); // ❌ Tasdiqlash kodi muddati o‘tgan
-                }
 
                 User user = new User
                 {

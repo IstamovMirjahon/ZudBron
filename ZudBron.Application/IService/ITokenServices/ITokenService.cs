@@ -8,5 +8,7 @@ namespace ZudBron.Application.IService.ITokenServices
         string GenerateAccessToken(Guid userId, UserRole role);
         Task<string> GenerateRefreshTokenAsync(Guid userId);
         Task<RefreshToken?> GetToken(string refreshToken);
+        Task<RefreshToken?> GetTokenByUserId(Guid UserId);
+        void DeleteRefreshToken(RefreshToken refreshToken);
     }
 }

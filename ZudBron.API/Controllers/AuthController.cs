@@ -110,7 +110,7 @@ namespace ZudBron.API.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPut]
         [SwaggerOperation(
             Summary = "Parolni yangilash?",
             Description = "Yangi parolingizni kiriting va parolingizni almashtiring"
@@ -224,7 +224,7 @@ namespace ZudBron.API.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPut]
         [SwaggerOperation(
             Summary = "Parolni yangilash?",
             Description = "Yangi parolingizni kiriting va parolingizni almashtiring"

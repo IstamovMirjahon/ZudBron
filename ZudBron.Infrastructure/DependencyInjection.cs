@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ZudBron.Application.IService.IAuthServices;
 using ZudBron.Application.IService.IEmailServices;
+using ZudBron.Application.IService.IFieldCategories;
 using ZudBron.Application.IService.IFieldServices;
 using ZudBron.Application.IService.ILocationServices;
 using ZudBron.Application.IService.INotificationServices;
@@ -10,9 +11,11 @@ using ZudBron.Application.IService.ITokenServices;
 using ZudBron.Application.IService.IUserServices;
 using ZudBron.Domain.Abstractions;
 using ZudBron.Infrastructure.Repositories.AuthRepositories;
+using ZudBron.Infrastructure.Repositories.FieldCategoriesRepository;
 using ZudBron.Infrastructure.Repositories.UserRepositories;
 using ZudBron.Infrastructure.Services.AuthServices;
 using ZudBron.Infrastructure.Services.EmailServices;
+using ZudBron.Infrastructure.Services.FieldCategoriesService;
 using ZudBron.Infrastructure.Services.FieldService;
 using ZudBron.Infrastructure.Services.LocationServices;
 using ZudBron.Infrastructure.Services.NotificationServices;
@@ -36,6 +39,8 @@ namespace ZudBron.Infrastructure
 
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IFieldCategoryRepository, FieldCategoryRepository>();
+
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IEmailService, EmailService>();
 
@@ -45,6 +50,7 @@ namespace ZudBron.Infrastructure
             services.AddScoped<INotificationService,NotificationService>();
             services.AddScoped<ILocationService,LocationService>();
             services.AddScoped<ISportFieldService, SportFieldService>();
+            services.AddScoped<IFieldCategoryService, FieldCategoryService>();
 
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
 
