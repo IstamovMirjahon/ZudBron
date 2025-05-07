@@ -46,6 +46,8 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     public DbSet<ForgotPassword> ForgotPasswords { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Location> Locations { get; set; }
+
+    public DbSet<PaymentClick> PaymentClicks { get; set; }
 }
 
 
