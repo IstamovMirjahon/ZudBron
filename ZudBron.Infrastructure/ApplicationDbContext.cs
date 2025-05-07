@@ -49,6 +49,7 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Location> Locations { get; set; }
     public DbSet<FieldCategory> FieldCategories { get; set; }
+    public DbSet<PaymentClick> PaymentClicks { get; set; }
 }
 
 
