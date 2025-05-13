@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using ZudBron.Application.IService.IFieldServices;
 using ZudBron.Domain.DTOs.FieldDTO;
-using ZudBron.Domain.Enums.FieldEnum;
 using ZudBron.Domain.Models.FieldCategories;
 using ZudBron.Domain.Models.Media;
 using ZudBron.Domain.Models.SportFieldModels;
