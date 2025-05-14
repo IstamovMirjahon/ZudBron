@@ -37,6 +37,9 @@ namespace ZudBron.Infrastructure
                 options.UseNpgsql(connectionString));
 
 
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IFieldCategoryRepository, FieldCategoryRepository>();
