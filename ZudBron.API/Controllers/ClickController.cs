@@ -19,13 +19,15 @@ namespace ZudBron.API.Controllers
         [HttpPost("prepare")]
         public async Task<IActionResult> Prepare([FromForm] ClickPrepareDto dto)
         {
-            return await _clickService.PrepareAsync(dto);
+            var top = await _clickService.PrepareAsync(dto);
+            return Ok(top.Value);
         }
 
         [HttpPost("complete")]
         public async Task<IActionResult> Complete([FromForm] ClickPrepareDto dto)
         {
-            return await _clickService.CompleteAsync(dto);
+            var top= await _clickService.CompleteAsync(dto);
+            return Ok(top.Value);
         }
 
         [HttpGet("create-payment")]

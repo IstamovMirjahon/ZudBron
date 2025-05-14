@@ -27,7 +27,7 @@ namespace ZudBron.API.Controllers
             try
             {
                 var result = await _locationService.GetGoogleMapsRouteAsync(request);
-                return Ok(result);
+                return Ok(result.Value);
             }
             catch (Exception ex)
             {
@@ -39,7 +39,7 @@ namespace ZudBron.API.Controllers
         public async Task<IActionResult> CreateLocation([FromBody] CreateLocationDto dto)
         {
             var locationId = await _locationService.CreateLocationAsync(dto);
-            return Ok(new { message = "Location created successfully", id = locationId });
+            return Ok(new { message = "Location created successfully", id = locationId.Value });
         }
     }
 }
